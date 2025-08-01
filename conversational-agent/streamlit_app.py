@@ -1,95 +1,131 @@
 import streamlit as st
 from chatbot_logic import get_response
 
-st.set_page_config(page_title="AI Chat Assistant", layout="wide", page_icon="🤖")
+st.set_page_config(page_title="Virtual Support Assistant", layout="centered")
 
-# 🎨 Custom Animated Background + Glowing UI
+# === Custom CSS: Real-World Premium UI ===
 st.markdown("""
     <style>
     body {
-        background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #fbc2eb, #a18cd1);
-        background-size: 400% 400%;
-        animation: gradientBG 15s ease infinite;
+        background: #f5f7fa;
         font-family: 'Segoe UI', sans-serif;
-        color: #ffffff;
     }
 
-    @keyframes gradientBG {
-        0% {background-position: 0% 50%;}
-        50% {background-position: 100% 50%;}
-        100% {background-position: 0% 50%;}
-    }
-
-    .chat-title {
-        font-size: 3rem;
-        color: #ffffff;
+    .header {
+        font-size: 2.8rem;
+        font-weight: bold;
+        color: #34495e;
         text-align: center;
-        text-shadow: 0 0 15px #00000066;
-        animation: glowText 2s ease-in-out infinite alternate;
         margin-bottom: 2rem;
+        animation: fadeInDown 1s ease-in-out;
     }
 
-    @keyframes glowText {
-        from {
-            text-shadow: 0 0 10px #00f5ff, 0 0 20px #00f5ff;
-        }
-        to {
-            text-shadow: 0 0 20px #00e0ff, 0 0 40px #00e0ff;
-        }
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .chat-container {
+        max-width: 700px;
+        margin: auto;
+        padding: 30px;
+        background: #ffffffdd;
+        border-radius: 18px;
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
     }
 
     .chat-bubble-user {
-        background: rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(14px);
-        padding: 14px;
-        border-radius: 15px 15px 0 15px;
-        margin: 10px 0;
-        color: #ffffff;
+        background-color: #007bff;
+        color: white;
+        padding: 12px 18px;
+        border-radius: 18px 18px 0 18px;
+        margin: 12px 0;
         text-align: right;
-        border: 1px solid #ffffff44;
+        margin-left: 100px;
+        animation: fadeIn 0.3s ease-in;
     }
 
     .chat-bubble-bot {
-        background: rgba(0, 0, 0, 0.3);
-        backdrop-filter: blur(10px);
-        padding: 14px;
-        border-radius: 15px 15px 15px 0;
-        margin: 10px 0;
-        color: #ffffff;
+        background-color: #ecf0f1;
+        color: #2c3e50;
+        padding: 12px 18px;
+        border-radius: 18px 18px 18px 0;
+        margin: 12px 0;
         text-align: left;
-        border: 1px solid #ffffff33;
+        margin-right: 100px;
+        animation: fadeIn 0.3s ease-in;
     }
 
-    ::placeholder {
-        color: #ffffffaa;
+    @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
+    }
+
+    .avatar-user {
+        float: right;
+        margin-left: 10px;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .avatar-bot {
+        float: left;
+        margin-right: 10px;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .clearfix::after {
+        content: "";
+        display: block;
+        clear: both;
     }
     </style>
 
-    <div class='chat-title'>💬 AI Conversational Assistant</div>
+    <div class='header'>🤖 Virtual Support Assistant</div>
+    <div class='chat-container'>
 """, unsafe_allow_html=True)
 
-# Sidebar
+# Sidebar (for branding/info)
 with st.sidebar:
-    st.markdown("### 🧠 About This App")
-    st.markdown("A modern AI-powered contact center chatbot built using:")
+    st.markdown("### 🌐 About the Assistant")
+    st.markdown("Built with:")
     st.markdown("- Sentence Transformers")
-    st.markdown("- FAISS")
-    st.markdown("- Streamlit")
+    st.markdown("- FAISS for semantic search")
+    st.markdown("- Streamlit for UI")
     if st.button("🧹 Clear Chat"):
         st.session_state.chat = []
 
-# Session storage for chat
+# Initialize chat session
 if "chat" not in st.session_state:
     st.session_state.chat = []
 
-# Show chat history
-for user_input, bot_reply in reversed(st.session_state.chat):
-    st.markdown(f"<div class='chat-bubble-user'>🧑‍💼 You: {user_input}</div>", unsafe_allow_html=True)
-    st.markdown(f"<div class='chat-bubble-bot'>🤖 Bot: {bot_reply}</div>", unsafe_allow_html=True)
+# === Display chat bubbles
+for user_msg, bot_msg in reversed(st.session_state.chat):
+    st.markdown(f"""
+    <div class='clearfix'>
+        <img src='https://i.imgur.com/HZ5RZkP.png' class='avatar-user'>
+        <div class='chat-bubble-user'>You: {user_msg}</div>
+    </div>
+    """, unsafe_allow_html=True)
 
-# Chat input
+    st.markdown(f"""
+    <div class='clearfix'>
+        <img src='https://i.imgur.com/VX3AVVl.png' class='avatar-bot'>
+        <div class='chat-bubble-bot'>Bot: {bot_msg}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+# === Chat input
 user_input = st.chat_input("Type your message here...")
 
 if user_input:
     bot_reply = get_response(user_input)
     st.session_state.chat.append((user_input, bot_reply))
+
+# Close the container
+st.markdown("</div>", unsafe_allow_html=True)
