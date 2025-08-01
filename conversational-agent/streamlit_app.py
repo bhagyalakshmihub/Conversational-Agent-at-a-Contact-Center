@@ -1,79 +1,95 @@
 import streamlit as st
 from chatbot_logic import get_response
 
-# Streamlit page config
-st.set_page_config(
-    page_title="Conversational AI",
-    layout="centered",
-    page_icon="🤖"
-)
+st.set_page_config(page_title="AI Chat Assistant", layout="wide", page_icon="🤖")
 
-# 🎨 Inject custom CSS for beautiful UI
+# 🎨 Custom Animated Background + Glowing UI
 st.markdown("""
     <style>
     body {
-        background: linear-gradient(to right, #e0eafc, #cfdef3);
+        background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #fbc2eb, #a18cd1);
+        background-size: 400% 400%;
+        animation: gradientBG 15s ease infinite;
         font-family: 'Segoe UI', sans-serif;
+        color: #ffffff;
     }
+
+    @keyframes gradientBG {
+        0% {background-position: 0% 50%;}
+        50% {background-position: 100% 50%;}
+        100% {background-position: 0% 50%;}
+    }
+
     .chat-title {
-        font-size: 2.4rem;
-        color: #34495e;
+        font-size: 3rem;
+        color: #ffffff;
         text-align: center;
-        padding: 10px;
-        margin-bottom: 30px;
-        font-weight: 700;
-        animation: fadeIn 2s ease-in;
+        text-shadow: 0 0 15px #00000066;
+        animation: glowText 2s ease-in-out infinite alternate;
+        margin-bottom: 2rem;
     }
+
+    @keyframes glowText {
+        from {
+            text-shadow: 0 0 10px #00f5ff, 0 0 20px #00f5ff;
+        }
+        to {
+            text-shadow: 0 0 20px #00e0ff, 0 0 40px #00e0ff;
+        }
+    }
+
     .chat-bubble-user {
-        background: rgba(255, 255, 255, 0.4);
-        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(14px);
         padding: 14px;
         border-radius: 15px 15px 0 15px;
         margin: 10px 0;
-        color: #2c3e50;
+        color: #ffffff;
         text-align: right;
-        font-weight: 500;
+        border: 1px solid #ffffff44;
     }
+
     .chat-bubble-bot {
-        background: rgba(255, 255, 255, 0.7);
+        background: rgba(0, 0, 0, 0.3);
         backdrop-filter: blur(10px);
         padding: 14px;
         border-radius: 15px 15px 15px 0;
         margin: 10px 0;
-        color: #2c3e50;
+        color: #ffffff;
         text-align: left;
-        font-weight: 500;
+        border: 1px solid #ffffff33;
     }
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-10px); }
-        to { opacity: 1; transform: translateY(0); }
+
+    ::placeholder {
+        color: #ffffffaa;
     }
     </style>
-    <div class='chat-title'>🤖 Conversational AI Assistant</div>
+
+    <div class='chat-title'>💬 AI Conversational Assistant</div>
 """, unsafe_allow_html=True)
 
-# 🧠 Sidebar info
+# Sidebar
 with st.sidebar:
-    st.markdown("### 💡 About")
-    st.markdown("AI-powered contact center assistant built with:")
+    st.markdown("### 🧠 About This App")
+    st.markdown("A modern AI-powered contact center chatbot built using:")
     st.markdown("- Sentence Transformers")
     st.markdown("- FAISS")
     st.markdown("- Streamlit")
     if st.button("🧹 Clear Chat"):
         st.session_state.chat = []
 
-# 🧠 Chat history state
+# Session storage for chat
 if "chat" not in st.session_state:
     st.session_state.chat = []
 
-# 💬 Chat display
-for user_msg, bot_msg in reversed(st.session_state.chat):
-    st.markdown(f"<div class='chat-bubble-user'>You: {user_msg}</div>", unsafe_allow_html=True)
-    st.markdown(f"<div class='chat-bubble-bot'>Bot: {bot_msg}</div>", unsafe_allow_html=True)
+# Show chat history
+for user_input, bot_reply in reversed(st.session_state.chat):
+    st.markdown(f"<div class='chat-bubble-user'>🧑‍💼 You: {user_input}</div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='chat-bubble-bot'>🤖 Bot: {bot_reply}</div>", unsafe_allow_html=True)
 
-# 📥 Chat input
-user_input = st.chat_input("Type your question here...")
+# Chat input
+user_input = st.chat_input("Type your message here...")
 
 if user_input:
-    bot_response = get_response(user_input)
-    st.session_state.chat.append((user_input, bot_response))
+    bot_reply = get_response(user_input)
+    st.session_state.chat.append((user_input, bot_reply))
