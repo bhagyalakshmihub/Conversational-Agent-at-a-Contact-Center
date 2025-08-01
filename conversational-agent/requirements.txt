@@ -1,5 +1,4 @@
-Flask
+streamlit
 sentence-transformers
 faiss-cpu
 numpy
-pip install -r requirements.txt
