@@ -1,82 +1,70 @@
 import streamlit as st
 from chatbot_logic import get_response
 
-st.set_page_config(page_title="Virtual Support Assistant", layout="centered")
+st.set_page_config(page_title="Sunset Chatbot 🌇", layout="centered")
 
-# === Custom CSS: Real-World Premium UI ===
+# === Inject Aurora Gradient + Advanced UI ===
 st.markdown("""
     <style>
-    body {
-        background: #f5f7fa;
+    html, body {
+        background: linear-gradient(145deg, #ffecd2, #fcb69f);
         font-family: 'Segoe UI', sans-serif;
+        margin: 0;
+        padding: 0;
     }
 
-    .header {
-        font-size: 2.8rem;
-        font-weight: bold;
-        color: #34495e;
+    .chat-title {
+        font-size: 2.7rem;
         text-align: center;
-        margin-bottom: 2rem;
-        animation: fadeInDown 1s ease-in-out;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 25px;
+        text-shadow: 0 2px 10px #ffffff88;
+        animation: slideIn 1.3s ease-out;
     }
 
-    @keyframes fadeInDown {
-        from { opacity: 0; transform: translateY(-20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .chat-container {
-        max-width: 700px;
+    .chat-box {
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 20px;
+        padding: 25px;
+        max-width: 750px;
         margin: auto;
-        padding: 30px;
-        background: #ffffffdd;
-        border-radius: 18px;
-        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.1);
+        backdrop-filter: blur(10px);
     }
 
     .chat-bubble-user {
-        background-color: #007bff;
-        color: white;
-        padding: 12px 18px;
-        border-radius: 18px 18px 0 18px;
+        background-color: #ff6f61;
+        color: #fff;
+        padding: 14px 20px;
+        border-radius: 20px 20px 0 20px;
         margin: 12px 0;
         text-align: right;
-        margin-left: 100px;
-        animation: fadeIn 0.3s ease-in;
+        max-width: 75%;
+        margin-left: auto;
+        font-weight: 500;
+        animation: fadeIn 0.3s ease;
     }
 
     .chat-bubble-bot {
-        background-color: #ecf0f1;
+        background-color: #ffffffcc;
         color: #2c3e50;
-        padding: 12px 18px;
-        border-radius: 18px 18px 18px 0;
+        padding: 14px 20px;
+        border-radius: 20px 20px 20px 0;
         margin: 12px 0;
         text-align: left;
-        margin-right: 100px;
-        animation: fadeIn 0.3s ease-in;
+        max-width: 75%;
+        margin-right: auto;
+        font-weight: 500;
+        animation: fadeIn 0.3s ease;
     }
 
-    @keyframes fadeIn {
-        from { opacity: 0; transform: scale(0.95); }
-        to { opacity: 1; transform: scale(1); }
-    }
-
-    .avatar-user {
-        float: right;
-        margin-left: 10px;
+    .avatar-user, .avatar-bot {
         width: 35px;
         height: 35px;
         border-radius: 50%;
         object-fit: cover;
-    }
-
-    .avatar-bot {
-        float: left;
-        margin-right: 10px;
-        width: 35px;
-        height: 35px;
-        border-radius: 50%;
-        object-fit: cover;
+        margin: 0 10px;
     }
 
     .clearfix::after {
@@ -84,48 +72,62 @@ st.markdown("""
         display: block;
         clear: both;
     }
+
+    @keyframes slideIn {
+        from { transform: translateY(-30px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
+    }
     </style>
 
-    <div class='header'>🤖 Virtual Support Assistant</div>
-    <div class='chat-container'>
+    <div class='chat-title'>🌇 Sunset Support Chatbot</div>
+    <div class='chat-box'>
 """, unsafe_allow_html=True)
 
-# Sidebar (for branding/info)
+# === Sidebar (optional)
 with st.sidebar:
-    st.markdown("### 🌐 About the Assistant")
-    st.markdown("Built with:")
-    st.markdown("- Sentence Transformers")
-    st.markdown("- FAISS for semantic search")
-    st.markdown("- Streamlit for UI")
+    st.markdown("### 💡 About")
+    st.markdown("This assistant uses:")
+    st.markdown("- 🌐 FAISS vector search")
+    st.markdown("- 🤖 Sentence Transformers")
+    st.markdown("- ⚡ Streamlit for UI")
     if st.button("🧹 Clear Chat"):
         st.session_state.chat = []
 
-# Initialize chat session
+# === Chat Session
 if "chat" not in st.session_state:
     st.session_state.chat = []
 
-# === Display chat bubbles
+# === Render Chat History
 for user_msg, bot_msg in reversed(st.session_state.chat):
     st.markdown(f"""
     <div class='clearfix'>
-        <img src='https://i.imgur.com/HZ5RZkP.png' class='avatar-user'>
-        <div class='chat-bubble-user'>You: {user_msg}</div>
+        <div style="display: flex; justify-content: flex-end; align-items: center;">
+            <div class='chat-bubble-user'>You: {user_msg}</div>
+            <img class='avatar-user' src='https://i.imgur.com/HZ5RZkP.png'>
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
     st.markdown(f"""
     <div class='clearfix'>
-        <img src='https://i.imgur.com/VX3AVVl.png' class='avatar-bot'>
-        <div class='chat-bubble-bot'>Bot: {bot_msg}</div>
+        <div style="display: flex; justify-content: flex-start; align-items: center;">
+            <img class='avatar-bot' src='https://i.imgur.com/VX3AVVl.png'>
+            <div class='chat-bubble-bot'>Bot: {bot_msg}</div>
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
-# === Chat input
-user_input = st.chat_input("Type your message here...")
+# === Input
+user_input = st.chat_input("Ask me anything...")
 
 if user_input:
     bot_reply = get_response(user_input)
     st.session_state.chat.append((user_input, bot_reply))
 
-# Close the container
+# === Close box div
 st.markdown("</div>", unsafe_allow_html=True)
