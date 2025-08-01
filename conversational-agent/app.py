@@ -1,27 +1,25 @@
-from flask import Flask, render_template, request, jsonify
+# streamlit_app.py
+
+import streamlit as st
 from chatbot_logic import get_response
 
-app = Flask(__name__, template_folder='.')
+st.set_page_config(page_title="Conversational Contact Center", page_icon="🤖")
 
+st.title("🤖 Conversational Contact Center AI")
+st.markdown("Ask any question, and I’ll fetch the best matching answer.")
 
-@app.route('/')
-def home():
-    return render_template("index.html")
+# Chat history
+if "chat" not in st.session_state:
+    st.session_state.chat = []
 
-@app.route('/get-response', methods=['POST'])
-def bot_response():
-    user_input = request.form['message']
-    reply = get_response(user_input)
-    return jsonify({"response": reply})
+# User input
+user_input = st.text_input("You:", "")
 
-# Add other routes if needed
-@app.route('/help')
-def help_page():
-    return render_template("help.html")
+if user_input:
+    response = get_response(user_input)
+    st.session_state.chat.append((user_input, response))
 
-@app.route('/history')
-def history_page():
-    return render_template("history.html")
-
-if __name__ == '__main__':
-    app.run(debug=True)
+# Display chat
+for user_msg, bot_msg in reversed(st.session_state.chat):
+    st.markdown(f"**You:** {user_msg}")
+    st.markdown(f"🧠 **Bot:** {bot_msg}")
