@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Center Agent</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f7fb;
+      overflow-x: hidden;
+    }
+    .sidebar {
+      height: 100vh;
+      width: 280px;
+      position: fixed;
+      left: 0;
+      top: 0;
+      background: linear-gradient(180deg, #2e384d 0%, #1a1f33 100%);
+      color: white;
+      z-index: 1000;
+    }
+    .sidebar-header {
+      padding: 20px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .sidebar-header h3 {
+      margin: 0;
+      font-weight: 700;
+      font-size: 1.3rem;
+    }
+    .sidebar-menu .nav-link {
+      color: rgba(255, 255, 255, 0.8);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+    }
+    .sidebar-menu .nav-link:hover,
+    .sidebar-menu .nav-link.active {
+      color: white;
+      background: rgba(255, 255, 255, 0.1);
+      border-left: 3px solid #f6c23e;
+    }
+    .main-content {
+      margin-left: 280px;
+      padding: 20px;
+    }
+    .chat-container {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0.15rem 1.75rem rgba(58, 59, 69, 0.1);
+      height: 90vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .chat-header {
+      background: linear-gradient(90deg, #4e73df 0%, #6a11cb 100%);
+      color: white;
+      padding: 15px 20px;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+    }
+    .chat-messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      background-color: #f5f7fb;
+    }
+    .message {
+      margin-bottom: 15px;
+      max-width: 80%;
+    }
+    .user-message {
+      margin-left: auto;
+      background: #4e73df;
+      color: white;
+      border-radius: 18px 18px 0 18px;
+      padding: 12px 15px;
+    }
+    .bot-message {
+      background: white;
+      border-radius: 18px 18px 18px 0;
+      padding: 12px 15px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+    .chat-input {
+      padding: 15px;
+      background: white;
+      border-top: 1px solid #eee;
+      display: flex;
+      align-items: center;
+    }
+    .chat-input input {
+      flex: 1;
+      border: 1px solid #ddd;
+      border-radius: 30px;
+      padding: 12px 20px;
+      outline: none;
+    }
+    .send-btn {
+      background: #4e73df;
+      color: white;
+      border: none;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      margin-left: 10px;
+    }
+    .quick-replies {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 10px 20px;
+      background: #f8f9fc;
+      border-top: 1px solid #eee;
+      overflow-x: auto;
+    }
+    .quick-reply {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      padding: 8px 15px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .quick-reply:hover {
+      background: #4e73df;
+      color: white;
+      border-color: #4e73df;
+    }
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+      }
+      .main-content {
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h3><i class="fas fa-headset me-2"></i> Contact Center Agent</h3>
+    </div>
+    <div class="sidebar-menu nav flex-column">
+      <a class="nav-link active" href="#"><i class="fas fa-comments me-2"></i> Chat Dashboard</a>
+      <a class="nav-link" href="history.html"><i class="fas fa-history me-2"></i> History</a>
+      <a class="nav-link" href="settings.html"><i class="fas fa-cog me-2"></i> Settings</a>
+      <a class="nav-link" href="suggestions.html"><i class="fas fa-lightbulb me-2"></i> Suggestions</a>
+      <a class="nav-link" href="help.html"><i class="fas fa-question-circle me-2"></i> Help</a>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <div class="chat-container">
+      <div class="chat-header">
+        <h5><i class="fas fa-robot me-2"></i>Customer Support Agent</h5>
+      </div>
+      <div class="quick-replies" id="quickReplies">
+        <div class="quick-reply" onclick="sendQuickReply('What are your hours?')">What are your hours?</div>
+        <div class="quick-reply" onclick="sendQuickReply('How can I reset my password?')">How can I reset my password?</div>
+        <div class="quick-reply" onclick="sendQuickReply('Where is your office located?')">Where is your office located?</div>
+        <div class="quick-reply" onclick="sendQuickReply('How do I contact support?')">How do I contact support?</div>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <!-- Messages will be added by JavaScript -->
+      </div>
+      <div class="chat-input">
+        <input type="text" id="userInput" placeholder="Type your message here..." />
+        <button class="send-btn" id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+      </div>
+    </div>
+  </div>
+
+<script>
+// Append a message to the chat
+function appendMessage(sender, text) {
+  const div = document.createElement('div');
+  div.className = `message ${sender === 'user' ? 'user-message' : 'bot-message'}`;
+  div.innerHTML = `<strong>${sender === 'user' ? 'You' : 'AI Agent'}:</strong> ${text}`;
+  document.getElementById('chatMessages').appendChild(div);
+  document.getElementById('chatMessages').scrollTop = 
+    document.getElementById('chatMessages').scrollHeight;
+}
+
+// Send message to backend and display response
+function sendMessage() {
+  const input = document.getElementById('userInput');
+  const message = input.value.trim();
+  if (!message) return;
+  appendMessage('user', message);
+  input.value = '';
+
+  fetch('/get-response', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: 'message=' + encodeURIComponent(message)
+  })
+  .then(res => res.json())
+  .then(data => {
+    appendMessage('bot', data.response);
+  })
+  .catch(() => {
+    appendMessage('bot', "Sorry, I couldn't reach the server. Please try again later.");
+  });
+}
+
+// Quick reply handler
+function sendQuickReply(text) {
+  document.getElementById('userInput').value = text;
+  sendMessage();
+}
+
+// Event listeners
+window.addEventListener('DOMContentLoaded', function() {
+  // Welcome message
+  appendMessage('bot', "Hello! I'm your customer support assistant. How can I help you today?");
+
+  document.getElementById('sendBtn').addEventListener('click', sendMessage);
+  document.getElementById('userInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendMessage();
+  });
+});
+</script>
+</body>
+</html>
